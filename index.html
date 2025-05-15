@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FriendSync</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/lucide-react@0.263.1/dist/umd/lucide-react.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <script type="text/babel">
+    // Cole aqui o código do componente React FriendSync sem as linhas de import
+    // Substitua as importações por:
+    const { useState, useEffect } = React;
+    const { Clock, Send, Instagram, ArrowUpRight, MessageSquare } = window.LucideReact;
+
+    function FriendSync() {
+      // Estado para amigos e suas atividades - SUBSTITUA COM SEUS AMIGOS
+      const [friends, setFriends] = useState([
+        {
+          id: 1,
+          name: "Seu Amigo 1",
+          avatar: "https://via.placeholder.com/200", // Placeholder para fotos
+          lastMessage: new Date(2025, 4, 10, 14, 30), // Formato: (ano, mês-1, dia, hora, minuto)
+          lastMeme: new Date(2025, 4, 12, 9, 15),
+          lastTikTok: new Date(2025, 4, 14, 18, 45),
+        },
+        {
+          id: 2,
+          name: "Seu Amigo 2",
+          avatar: "https://via.placeholder.com/200",
+          lastMessage: new Date(2025, 4, 8, 20, 10),
+          lastMeme: new Date(2025, 4, 13, 12, 30),
+          lastTikTok: new Date(2025, 4, 11, 22, 15),
+        },
+        // Você pode adicionar quantos amigos quiser seguindo o mesmo padrão
+      ]);
+
+      // Estado para links compartilhados - SUBSTITUA COM SEUS LINKS
+      const [links, setLinks] = useState([
+        {
+          id: 1,
+          content: "Seu link ou conteúdo personalizado aqui https://seusite.com",
+          timestamp: new Date(2025, 4, 14, 19, 30),
+          type: "link",
+        },
+        {
+          id: 2,
+          content: "Seu tweet favorito https://twitter.com/exemplo/status/12345",
+          timestamp: new Date(2025, 4, 13, 12, 45),
+          type: "tweet",
+        },
+        // Adicione mais links conforme necessário
+      ]);
+
+      // Estado para novo link
+      const [newLink, setNewLink] = useState("");
+
+      // Calcula o tempo desde a última interação
+      const timeAgo = (date) => {
+        const now = new Date();
+        const diffMs = now - date;
+        const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffDays = Math.floor(diffHrs / 24);
+        
+        if (diffDays > 0) {
+          return `${diffDays}d ${diffHrs % 24}h`;
+        } else {
+          return `${diffHrs}h`;
+        }
+      };
+
+      // Adiciona um novo link
+      const addLink = () => {
+        if (newLink.trim()) {
+          const linkType = newLink.includes("twitter.com") ? "tweet" : "link";
+          setLinks([
+            {
+              id: links.length + 1,
+              content: newLink,
+              timestamp: new Date(),
+              type: linkType,
+            },
+            ...links,
+          ]);
+          setNewLink("");
+        }
+      };
+
+      return (
+        <div className="min-h-screen bg-gray-50 font-sans text-gray-900">
+          {/* Header */}
+          <header className="bg-white shadow-sm">
+            <div className="max-w-5xl mx-auto px-4 py-6">
+              <h1 className="text-3xl font-light tracking-tight text-gray-900">SeuNome Social</h1>
+              <p className="mt-1 text-sm text-gray-500">Seu slogan personalizado aqui</p>
+            </div>
+          </header>
+
+          {/* Main Content */}
+          <main className="max-w-5xl mx-auto px-4 py-8">
+            {/* Friends Section */}
+            <section>
+              <h2 className="text-2xl font-semibold mb-6">Status de Amigos</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {friends.map((friend) => (
+                  <div 
+                    key={friend.id} 
+                    className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                  >
+                    <div className="p-6">
+                      <div className="flex items-center mb-4">
+                        <img 
+                          src={friend.avatar} 
+                          alt={friend.name} 
+                          className="w-12 h-12 rounded-full object-cover" 
+                        />
+                        <h3 className="ml-4 text-lg font-medium">{friend.name}</h3>
+                      </div>
+                      
+                      <div className="space-y-3 text-sm">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center text-gray-600">
+                            <MessageSquare size={16} className="mr-2" />
+                            <span>Conversa</span>
+                          </div>
+                          <span className="font-mono bg-gray-100 px-2 py-1 rounded">
+                            {timeAgo(friend.lastMessage)}
+                          </span>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center text-gray-600">
+                            <Instagram size={16} className="mr-2" />
+                            <span>Meme</span>
+                          </div>
+                          <span className="font-mono bg-gray-100 px-2 py-1 rounded">
+                            {timeAgo(friend.lastMeme)}
+                          </span>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center text-gray-600">
+                            <Send size={16} className="mr-2" />
+                            <span>TikTok</span>
+                          </div>
+                          <span className="font-mono bg-gray-100 px-2 py-1 rounded">
+                            {timeAgo(friend.lastTikTok)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gray-50 px-6 py-3">
+                      <button className="w-full text-center text-sm text-blue-600 hover:text-blue-800 font-medium">
+                        Atualizar status
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Links Section */}
+            <section className="mt-16">
+              <h2 className="text-2xl font-semibold mb-6">Links & Tweets</h2>
+              
+              <div className="mb-8">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newLink}
+                    onChange={(e) => setNewLink(e.target.value)}
+                    placeholder="Cole um link ou tweet aqui..."
+                    className="flex-grow p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  />
+                  <button
+                    onClick={addLink}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors duration-200"
+                  >
+                    Adicionar
+                  </button>
+                </div>
+              </div>
+              
+              <div className="bg-white rounded-xl shadow-md divide-y divide-gray-100">
+                {links.map((link) => (
+                  <div key={link.id} className="p-5 hover:bg-gray-50">
+                    <div className="flex justify-between items-start">
+                      <p className="text-gray-800 break-words">
+                        {link.content}
+                      </p>
+                      <span className="text-xs text-gray-500 whitespace-nowrap ml-4">
+                        {link.timestamp.toLocaleDateString('pt-BR')}
+                      </span>
+                    </div>
+                    <div className="mt-2 flex items-center">
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                        link.type === 'tweet' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
+                      }`}>
+                        {link.type === 'tweet' ? 'Tweet' : 'Link'}
+                      </span>
+                      <a 
+                        href="#" 
+                        className="ml-auto text-xs text-blue-600 hover:text-blue-800 flex items-center"
+                      >
+                        <span>Abrir</span>
+                        <ArrowUpRight size={14} className="ml-1" />
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </main>
+          
+          {/* Footer */}
+          <footer className="bg-white border-t border-gray-200 mt-12">
+            <div className="max-w-5xl mx-auto px-4 py-8">
+              <p className="text-center text-sm text-gray-500">
+                © 2025 SeuNome Social. Design inspirado na Apple.
+              </p>
+            </div>
+          </footer>
+        </div>
+      );
+    }
+
+    // Renderizar o componente na página
+    ReactDOM.render(<FriendSync />, document.getElementById('root'));
+  </script>
+</body>
+</html>
